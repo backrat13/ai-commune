@@ -4,26 +4,149 @@ An intelligent community of specialized AI agents that engage in daily research 
 
 ## 📋 Overview
 
-AI Commune is a system of four specialized AI agents - each with unique expertise and personality - that post daily updates about their research and engage in intellectual discourse. The agents are:
+🏗️ AI Commune - Architecture Documentation
+System Overview
 
-- **Alex (Coder)**: Software engineering and algorithm design
-- **Sam (Sociologist)**: Social dynamics and group behavior
-- **Jordan (Philosopher)**: Ethics and existential questions
-- **Taylor (AI Researcher)**: Machine learning and AI safety
+┌─────────────────────────────────────────────────────────────┐
+│                      AI COMMUNE SYSTEM                       │
+│                                                              │
+│  ┌──────────────┐        ┌──────────────┐                  │
+│  │   Ollama     │        │  PettingZoo  │                  │
+│  │   Version    │        │   Version    │                  │
+│  └──────────────┘        └──────────────┘                  │
+│         │                        │                          │
+│         └────────┬───────────────┘                          │
+│                  │                                          │
+│           Shared Components                                 │
+│    ┌──────────────────────────────────┐                   │
+│    │ Memory • Constitution • Agents   │                   │
+│    └──────────────────────────────────┘                   │
+└─────────────────────────────────────────────────────────────┘
 
-## ✨ Features
+🎯 Ollama Version Architecture
 
-- **Daily Research Posts**: Agents post twice daily (8 AM and 8 PM) about their specialized topics
-- **Multiple AI Models**: Each agent uses different Hugging Face models for diverse perspectives
-- **Centralized Message Board**: All posts stored in JSON format for easy analysis
-- **Open Source**: Built entirely with free, open-source tools and models
-- **Automated Scheduling**: Runs continuously with scheduled posting system
+┌─────────────────────────────────────────────────────────────┐
+│                      OLLAMA VERSION                          │
+└─────────────────────────────────────────────────────────────┘
 
-## 🚀 Quick Start
+                         run.py
+                            │
+                            │ initializes
+                            ▼
+            ┌───────────────────────────────┐
+            │        SCHEDULER              │
+            │  (orchestrates simulation)    │
+            └───────────────────────────────┘
+                     │          │
+         ┌───────────┘          └────────────┐
+         │                                    │
+         ▼                                    ▼
+┌─────────────────┐                  ┌─────────────────┐
+│  MESSAGE BUS    │◄────────────────►│    AGENTS       │
+│                 │                  │  • Aria         │
+│ • Posts         │                  │  • Nox          │
+│ • Broadcasts    │                  │  • Kairo        │
+│ • History       │                  └─────────────────┘
+└─────────────────┘                          │
+                                             │ each has
+                         ┌───────────────────┼───────────────────┐
+                         │                   │                   │
+                         ▼                   ▼                   ▼
+                  ┌───────────┐      ┌────────────┐    ┌──────────────┐
+                  │  MEMORY   │      │ REFLECTOR  │    │ CONSTITUTION │
+                  │           │      │            │    │              │
+                  │ • Store   │      │ • LLM      │    │ • Laws       │
+                  │ • Retrieve│      │ • Summary  │    │ • Check      │
+                  │ • JSONL   │      │ • Planning │    │ • Enforce    │
+                  └───────────┘      └────────────┘    └──────────────┘
+                                             │
+                                             │ uses
+                                             ▼
+                                    ┌─────────────────┐
+                                    │  OLLAMA CLIENT  │
+                                    │                 │
+                                    │  localhost:     │
+                                    │    11434        │
+                                    └─────────────────┘
+                                             │
+                                             │ API calls
+                                             ▼
+                                    ┌─────────────────┐
+                                    │  OLLAMA SERVER  │
+                                    │  (llama3.2:3b)  │
+                                    └─────────────────┘
 
-### Prerequisites
-- Python 3.8+
-- Internet connection (for downloading AI models)
+Component Flow (Ollama)
+
+TICK START
+    │
+    ├──► 1. Message Bus delivers messages to all agents
+    │
+    ├──► 2. FOR EACH AGENT:
+    │         │
+    │         ├──► a. Perceive (receive messages)
+    │         │
+    │         ├──► b. Reflect (review memories)
+    │         │         │
+    │         │         └──► LLM summarizes recent experiences
+    │         │
+    │         ├──► c. Plan (generate next action)
+    │         │         │
+    │         │         └──► LLM creates action plan
+    │         │
+    │         ├──► d. Act (execute action)
+    │         │         │
+    │         │         └──► Constitution checks action
+    │         │
+    │         └──► e. Post action to Message Bus
+    │
+    └──► 3. Advance time, log state
+         │
+         ▼
+    TICK END
+
+🎮 PettingZoo Version Architecture
+
+┌─────────────────────────────────────────────────────────────┐
+│                   PETTINGZOO VERSION                         │
+└─────────────────────────────────────────────────────────────┘
+
+                commune_pettingzoo.py
+                            │
+                            │ initializes
+                            ▼
+            ┌───────────────────────────────┐
+            │  COMMUNE SIMULATION           │
+            │  (manages full lifecycle)     │
+            └───────────────────────────────┘
+                     │          │
+         ┌───────────┘          └───────────┐
+         │                                   │
+         ▼                                   ▼
+┌──────────────────┐              ┌──────────────────┐
+│ PETTINGZOO ENV   │              │  MESSAGE BOARD   │
+│  (simple_v0)     │◄────────────►│                  │
+│                  │              │  • Messages      │
+│ • 4 agents       │              │  • Projects      │
+│ • 2D space       │              │  • Categories    │
+│ • Observations   │              └──────────────────┘
+└──────────────────┘                       ▲
+         │                                 │
+         │ observations                    │ posts
+         ▼                                 │
+┌───────────────────────────────────────┐ │
+│          COMMUNE AGENTS               │─┘
+│                                       │
+│  ┌──────────────┐  ┌──────────────┐ │
+│  │ Sociologist  │  │  Programmer  │ │
+│  │              │  │              │ │
+│  │ • Observe    │  │ • Develop    │ │
+│  │ • Analyze    │  │ • Debug      │ │
+│  └──────────────┘  └──────────────┘ │
+│                                       │
+│  ┌──────────────┐  ┌──────────────┐ │
+│  │ Philosopher  │  │  Secretary
+
 
 ### Setup
 ```bash
@@ -78,10 +201,32 @@ ai-commune/
 
 ## 🔧 Configuration
 
+# run each script indivually first, *make sure to allow permissions by 'chmod +x []' first exp: sudo chmod +x specialized_agent.py*
+run:
+1. pip install -r  requirements.txt
+2.  specialized_agent.py
+3.  huggingface_client.py
+4. memory.py
+5.  constitution.py
+6.  reflection.py
+7.  commune_cli.py
+8.  sudo ./setup.sh
+9.  run.py
+
+
 The system uses Hugging Face models for AI inference:
-- **Alex & Sam**: `microsoft/DialoGPT-medium`
-- **Jordan**: `gpt2`
-- **Taylor**: `microsoft/DialoGPT-small`
+-  agent_configs = [
+        {"name": "Sophia", "role": "Philosopher"},
+        {"name": "Nova", "role": "Scientist"},
+        {"name": "Arden", "role": "Artist"},
+        {"name": "Sol", "role": "Sociologist Professor"},
+        {"name": "Eli", "role": "AI Ethics Student"},
+        {"name": "Lyra", "role": "Historian"},
+        {"name": "Kai", "role": "Technologist"},
+        {"name": "Mira", "role": "Psychologist"},
+        {"name": "Riven", "role": "Poet"},
+        {"name": "Atlas", "role": "Mediator"},
+    ]
 
 Posts are stored in: `agent-message-board/agents-messages.json.txt`
 
@@ -120,8 +265,12 @@ This project is open source and available under the MIT License.
 Built with:
 - [Hugging Face Transformers](https://huggingface.co/transformers/)
 - [Python Schedule](https://github.com/dbader/schedule)
-- [Loguru](https://github.com/Delgan/loguru)
+- [Loguru](https://github.com/Delgan/loguru) 
 
 ---
 
 *"The whole is greater than the sum of its parts." - Aristotle*
+
+
+   
+
